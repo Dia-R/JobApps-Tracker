@@ -81,15 +81,15 @@ All user stories are prioritized using three levels:
 ### Feature 1 — Application Tracking Dashboard
 
 - Centralized dashboard showing all applications and their statuses
-    - Track stages: Applied → Interview Rounds → Offer → Rejected / Accepted
-    - View application progress at a glance
+  - Track stages: Applied → Interview Rounds → Offer → Rejected / Accepted
+  - View application progress at a glance
 
 ### Feature 2 — Deadline & Interview Reminders
 
 - Notifications for:
-    - Offer acceptance deadlines
-    - Interview schedules
-    - Follow-ups with HR
+  - Offer acceptance deadlines
+  - Interview schedules
+  - Follow-ups with HR
 
 ### Feature 3 — Calendar-Style Overview of Upcoming Events
 
@@ -98,9 +98,9 @@ All user stories are prioritized using three levels:
 ### Feature 4 — Internship Sorting and Filtering
 
 - Compare internships by:
-    - Salary
-    - Location / travel time
-    - Job scope
+  - Salary
+  - Location / travel time
+  - Job scope
 
 ---
 
@@ -189,67 +189,144 @@ Non-functional requirements specify **the constraints and quality standards** th
 
 ## 7. Use Cases
 
+---
+
 ### UC-01: Track Interview Round Progress
+
+**System:** Internship / Job Tracker
 
 **Actor:** Student
 
-**Precondition:** At least one application entry exists in the system.
+**Precondition:** Student has at least one application entry saved in the system.
 
-**Main Flow:**
+**MSS:**
+
 1. Student opens the Application Dashboard.
-2. Student selects an application entry.
-3. Student updates the status to the current interview round (e.g., Interview Round 1).
-4. System saves and reflects the updated status on the Dashboard.
+2. System displays all application entries with their current statuses.
+3. Student selects an application entry.
+4. Student updates the status to the current interview round (e.g., Interview Round 1).
+5. System saves and reflects the updated status on the Dashboard.
 
-**Postcondition:** The application status is updated and visible on the Dashboard.
+Use case ends.
+
+**Extensions:**
+
+2a. No application entries exist.
+- 2a1. System displays an empty dashboard with a prompt to add a new application.
+- Use case ends.
+
+*a. Application data fails to load.
+- *a1. System informs the student that data could not be retrieved.
+- Use case ends.
 
 ---
 
 ### UC-02: Monitor Offer Deadline
 
+**System:** Internship / Job Tracker
+
 **Actor:** Student
 
-**Precondition:** An application entry exists with its status set to "Offer".
+**Precondition:** Student is logged in and has at least one application entry with status set to "Offer".
 
-**Main Flow:**
-1. Student opens the application entry.
-2. Student enters the offer acceptance deadline date.
-3. System saves the deadline.
-4. When the deadline is approaching, the system displays an in-app notification.
+**MSS:**
 
-**Postcondition:** The deadline is saved and an in-app notification appears when it is approaching.
+1. Student opens the Application Dashboard.
+2. System displays all application entries.
+3. Student selects an application entry marked as "Offer".
+4. Student performs Set Offer Deadline (UC-02a) to enter the acceptance deadline date.
+5. System saves the deadline and schedules a notification.
+6. When the deadline is approaching, the system displays an in-app notification.
+
+Use case ends.
+
+**Extensions:**
+
+2a. No applications are marked as "Offer".
+- 2a1. System displays no applicable entries in the offer view.
+- Use case ends.
+
+6a. Deadline date has already passed when entered.
+- 6a1. System warns the student that the entered date is in the past.
+- 6a2. Student re-enters a valid deadline date.
+- Resume from step 5.
+
+*a. Data fails to save.
+- *a1. System informs the student that the deadline could not be saved.
+- Use case ends.
 
 ---
 
-### UC-03: Compare Internships
+### UC-03: Filter and Compare Internships
+
+**System:** Internship / Job Tracker
 
 **Actor:** Student
 
-**Precondition:** At least two application entries exist with comparison fields (salary, location, job scope) populated.
+**Precondition:** Student has at least two application entries with comparison fields (salary, location, job scope) populated.
 
-**Main Flow:**
+**MSS:**
+
 1. Student navigates to the Internship Comparison Tool.
-2. Student selects two or more applications to compare.
-3. System displays a side-by-side view showing salary, location / travel time, and job scope.
-4. Student optionally filters the list before selecting applications to compare.
+2. System displays all application entries with their comparison fields.
+3. Student performs Filter Applications by Criterion (UC-03a) to narrow down the list by salary, location, or job scope.
+4. Student selects two or more applications to compare.
+5. System displays a side-by-side view of the selected applications showing salary, location / travel time, and job scope.
 
-**Postcondition:** Student can view a structured comparison of selected opportunities.
+Repeat steps 3–5 until the student is satisfied.
+
+Use case ends.
+
+**Extensions:**
+
+2a. No application entries have comparison fields populated.
+- 2a1. System notifies the student that no comparable data is available.
+- Use case ends.
+
+4a. Student selects fewer than two applications.
+- 4a1. System prompts the student to select at least two applications to compare.
+- Resume from step 4.
+
+*a. Data fails to load.
+- *a1. System informs the student that comparison data could not be retrieved.
+- Use case ends.
 
 ---
 
 ### UC-04: Log Interview Notes
 
+**System:** Internship / Job Tracker
+
 **Actor:** Student
 
-**Precondition:** An application entry exists with at least one interview round recorded.
+**Precondition:** Student has at least one application entry with at least one interview round recorded.
 
-**Main Flow:**
-1. Student opens an application entry.
-2. Student navigates to the Notes section.
-3. Student writes general interview notes in the free-text field.
-4. System saves all notes.
+**MSS:**
 
-**Postcondition:** Notes are saved and retrievable at any time.
+1. Student opens the Application Dashboard.
+2. System displays all application entries.
+3. Student selects an application entry.
+4. Student navigates to the Notes section.
+5. Student writes interview notes in the free-text field.
+6. System saves the notes automatically.
+
+Repeat steps 5–6 until the student is satisfied.
+
+Use case ends.
+
+**Extensions:**
+
+2a. No application entries exist.
+- 2a1. System displays an empty dashboard with a prompt to add a new application.
+- Use case ends.
+
+4a. The Notes section has no previously saved content.
+- 4a1. System displays a blank notes field.
+- Resume from step 5.
+
+*a. Notes fail to save.
+- *a1. System informs the student that the notes could not be saved.
+- Use case ends.
 
 ---
 
