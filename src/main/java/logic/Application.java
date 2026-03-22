@@ -27,6 +27,21 @@ public class Application {
         this.notes = "";
     }
 
+    /** Constructor for restoring from storage. */
+    public Application(String id, String companyName, String roleTitle, double pay,
+                       String location, ApplicationStatus status, LocalDate dateApplied,
+                       LocalDate deadline, String notes) {
+        this.id = id;
+        this.companyName = companyName;
+        this.roleTitle = roleTitle;
+        this.pay = pay;
+        this.location = location;
+        this.status = status;
+        this.dateApplied = dateApplied;
+        this.deadline = deadline;
+        this.notes = notes != null ? notes : "";
+    }
+
     public String getId() { return id; }
     public String getCompanyName() { return companyName; }
     public String getRoleTitle() { return roleTitle; }

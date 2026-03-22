@@ -18,6 +18,15 @@ public class Reminder {
         this.dismissed = false;
     }
 
+    /** Constructor for restoring from storage. */
+    public Reminder(String id, String applicationId, ReminderType type, LocalDate triggerDate, boolean dismissed) {
+        this.id = id;
+        this.applicationId = applicationId;
+        this.type = type;
+        this.triggerDate = triggerDate;
+        this.dismissed = dismissed;
+    }
+
     public String getId() { return id; }
     public String getApplicationId() { return applicationId; }
     public ReminderType getType() { return type; }
