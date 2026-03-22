@@ -8,8 +8,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Represents the main JavaFX application.
+ * Responsible for loading the main window layout and displaying the primary stage.
+ */
 public class Main extends Application {
 
+    /**
+     * Loads the main FXML layout, sets up the scene, and displays the primary stage.
+     */
     @Override
     public void start(Stage stage) {
         try {

@@ -7,6 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * Controls the dashboard view of the application.
+ * Manages the display and filtering of internship applications in a table.
+ */
 public class DashboardController {
 
     @FXML private TextField searchField;
@@ -20,6 +24,10 @@ public class DashboardController {
             FXCollections.observableArrayList();
     private FilteredList<ApplicationEntry> filteredList;
 
+    /**
+     * Initializes the dashboard after the FXML has been loaded.
+     * Sets up table columns and binds the filtered list to the table view.
+     */
     @FXML
     public void initialize() {
         colCompany.setCellValueFactory(new PropertyValueFactory<>("companyName"));
@@ -36,6 +44,10 @@ public class DashboardController {
         System.out.println("New application alert");
     }
 
+    /**
+     * Filters the application list based on the search keyword.
+     * Matches entries by company name or role title.
+     */
     @FXML
     private void handleSearch() {
         String keyword = searchField.getText().toLowerCase().trim();

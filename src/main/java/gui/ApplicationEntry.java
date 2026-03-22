@@ -1,5 +1,9 @@
 package gui;
 
+/**
+ * Represents a placeholder internship application entry.
+ * Stores basic details such as company name, role title, application status, and deadline.
+ */
 public class ApplicationEntry {
 
     private String companyName;
@@ -7,6 +11,14 @@ public class ApplicationEntry {
     private String status;
     private String deadline;
 
+    /**
+     * Creates a new application entry with the specified details.
+     *
+     * @param companyName Name of the company.
+     * @param roleTitle Title of the role applied for.
+     * @param status Current status of the application.
+     * @param deadline Application or offer deadline.
+     */
     public ApplicationEntry(String companyName, String roleTitle,
                             String status, String deadline) {
         this.companyName = companyName;
