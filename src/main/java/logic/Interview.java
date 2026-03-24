@@ -18,6 +18,15 @@ public class Interview {
         this.notes = "";
     }
 
+    /** Constructor for restoring from storage. */
+    public Interview(String id, String applicationId, int round, LocalDateTime date, String notes) {
+        this.id = id;
+        this.applicationId = applicationId;
+        this.round = round;
+        this.date = date;
+        this.notes = notes != null ? notes : "";
+    }
+
     public String getId() { return id; }
     public String getApplicationId() { return applicationId; }
     public int getRound() { return round; }
