@@ -4,45 +4,51 @@
 <?import javafx.geometry.Insets?>
 
 <ScrollPane fitToWidth="true" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="gui.NewApplicationController">
-    <VBox spacing="16" maxWidth="600" alignment="TOP_CENTER">
+            fx:controller="gui.NewApplicationController"
+            styleClass="form-page">
+    <VBox styleClass="form-container">
         <padding><Insets top="24" right="32" bottom="24" left="32"/></padding>
 
-        <Label text="New Application" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+        <Label text="Pages / New Application" styleClass="breadcrumb"/>
+        <Label text="New Application" styleClass="page-title"/>
 
-        <GridPane hgap="12" vgap="12">
-            <columnConstraints>
-                <ColumnConstraints minWidth="120"/>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
+        <VBox styleClass="card" spacing="14">
 
-            <Label text="Company *"  GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-            <TextField fx:id="companyField"
-                       GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <GridPane hgap="16" vgap="14">
+                <columnConstraints>
+                    <ColumnConstraints minWidth="130"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
 
-            <Label text="Role *"     GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="roleField"
-                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+                <Label text="Company *"  styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="companyField" styleClass="form-field"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"/>
 
-            <Label text="Status *"   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <ChoiceBox fx:id="statusChoice" maxWidth="Infinity"
-                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <Label text="Role *"     styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="roleField" styleClass="form-field"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
-            <Label text="Pay ($/hr)" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextField fx:id="payField" promptText="Optional"
-                       GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Status *"   styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <ChoiceBox fx:id="statusChoice" maxWidth="Infinity"
+                           styleClass="choice-box"
+                           GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-            <Label text="Location"   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <TextField fx:id="locationField" promptText="Optional"
-                       GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-        </GridPane>
+                <Label text="Pay ($/hr)" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <TextField fx:id="payField" promptText="Optional" styleClass="form-field"
+                           GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-        <Label fx:id="errorLabel" style="-fx-text-fill: red;"/>
+                <Label text="Location"   styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <TextField fx:id="locationField" promptText="Optional" styleClass="form-field"
+                           GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            </GridPane>
 
-        <HBox spacing="12" alignment="CENTER_RIGHT">
-            <Button text="Cancel"           onAction="#handleCancel"/>
-            <Button text="Save Application" onAction="#handleSubmit"
-                    style="-fx-background-color: #2563eb; -fx-text-fill: white;"/>
-        </HBox>
+            <Label fx:id="errorLabel" styleClass="error-label"/>
+
+            <HBox spacing="12" alignment="CENTER_RIGHT">
+                <Button text="Cancel"           styleClass="secondary-button" onAction="#handleCancel"/>
+                <Button text="Save Application" styleClass="primary-button"   onAction="#handleSubmit"/>
+            </HBox>
+
+        </VBox>
     </VBox>
 </ScrollPane>

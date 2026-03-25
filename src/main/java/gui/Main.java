@@ -22,7 +22,10 @@ public class Main extends Application {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/MainWindow.fxml"));
             BorderPane ap = fxmlLoader.load();
-            Scene scene = new Scene(ap, 900, 600);
+            Scene scene = new Scene(ap, 1050, 680);
+            scene.getStylesheets().add(
+                    Main.class.getResource("/view/styles.css").toExternalForm()
+            );
             stage.setScene(scene);
             stage.setTitle("Job Application Tracker");
             stage.show();

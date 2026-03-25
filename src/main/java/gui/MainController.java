@@ -3,33 +3,42 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Controls the main window of the application.
- * Handles navigation between different views displayed in the content area.
+ * Handles navigation between views and highlights the active sidebar button.
  */
 public class MainController {
 
-    /**
-     * Initializes the controller after the FXML has been loaded.
-     * Displays the dashboard view by default.
-     */
     @FXML private StackPane contentArea;
+    @FXML private Button btnDashboard;
+    @FXML private Button btnCalendar;
+    @FXML private Button btnCompare;
+
+    private List<Button> navButtons;
 
     @FXML
     public void initialize() {
+        navButtons = List.of(btnDashboard, btnCalendar, btnCompare);
+        // Apply default style — FXML doesn't set styleClass on these buttons
+        // so we initialise them all as inactive here.
+        navButtons.forEach(b -> b.getStyleClass().setAll("nav-button"));
         showDashboard();
     }
+    private void setActive(Button active) {
+        for (Button btn : navButtons) {
+            btn.getStyleClass().setAll(btn == active ? "nav-button-active" : "nav-button");
+        }
+    }
 
-    /**
-     * Loads the dashboard view and injects a callback so the dashboard's
-     * "New Application" button can navigate to the form.
-     */
     @FXML
-    void showDashboard() {
+    public void showDashboard() {
+        setActive(btnDashboard);
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/DashboardView.fxml"));
             Node view = loader.load();
@@ -41,10 +50,6 @@ public class MainController {
         }
     }
 
-    /**
-     * Loads the new application form and injects a callback to return
-     * to the dashboard on save or cancel.
-     */
     private void showNewApplication() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/NewApplicationView.fxml"));
@@ -59,19 +64,16 @@ public class MainController {
 
     @FXML
     private void showCalendar() {
+        setActive(btnCalendar);
         loadView("/view/CalendarView.fxml");
     }
 
     @FXML
     private void showCompare() {
+        setActive(btnCompare);
         loadView("/view/CompareView.fxml");
     }
 
-    /**
-     * Loads the specified FXML view and replaces the current content in the content area.
-     *
-     * @param fxmlPath Path to the FXML file to be loaded.
-     */
     private void loadView(String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));

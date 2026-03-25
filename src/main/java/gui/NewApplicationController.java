@@ -72,8 +72,6 @@ public class NewApplicationController {
 
         if (onSuccess != null) onSuccess.run();
     }
-
-    /** Navigates back to the dashboard without saving. */
     @FXML
     private void handleCancel() {
         if (onSuccess != null) onSuccess.run();

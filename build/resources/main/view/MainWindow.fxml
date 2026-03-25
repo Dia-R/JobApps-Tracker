@@ -5,12 +5,14 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="gui.MainController">
+            fx:controller="gui.MainController"
+            style="-fx-background-color: #141414;">
 
     <left>
-        <VBox spacing="5" style="-fx-padding: 10; -fx-min-width: 150;">
-            <Label text="Menu" style="-fx-font-weight: bold;"/>
+        <VBox styleClass="sidebar">
+            <Label text="AppTracker" styleClass="sidebar-logo"/>
             <Separator/>
+            <Label text="NAVIGATION" styleClass="sidebar-title"/>
             <Button fx:id="btnDashboard" text="Dashboard"
                     maxWidth="Infinity" onAction="#showDashboard"/>
             <Button fx:id="btnCalendar"  text="Calendar"
@@ -20,7 +22,7 @@
         </VBox>
     </left>
     <center>
-        <StackPane fx:id="contentArea"/>
+        <StackPane fx:id="contentArea" style="-fx-background-color: #141414;"/>
     </center>
 
 </BorderPane>

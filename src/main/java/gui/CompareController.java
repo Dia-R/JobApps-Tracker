@@ -34,16 +34,10 @@ public class CompareController {
     private final ApplicationController appController =
             new ApplicationController(new FileStorage());
 
-    /** Tracks which applications are currently checked. */
     private final Map<String, BooleanProperty> checkedState = new LinkedHashMap<>();
-
-    private final ObservableList<Application> allApps    = FXCollections.observableArrayList();
+    private final ObservableList<Application> allApps      = FXCollections.observableArrayList();
     private final ObservableList<Application> selectedApps = FXCollections.observableArrayList();
 
-    /**
-     * Initializes the compare view after the FXML has been loaded.
-     * Populates the checkbox list and sets up the comparison table columns.
-     */
     @FXML
     public void initialize() {
         setupTable();
@@ -51,7 +45,6 @@ public class CompareController {
         setupListView();
     }
 
-    /** Configures table columns with appropriate value factories. */
     private void setupTable() {
         colCompany.setCellValueFactory(c ->
                 new SimpleStringProperty(c.getValue().getCompanyName()));
@@ -72,7 +65,7 @@ public class CompareController {
             return new SimpleStringProperty(d != null ? d.toString() : "—");
         });
 
-        // Highlight the highest-pay row
+        // Highlight the highest-pay row in orange (dark-theme friendly)
         compareTable.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(Application app, boolean empty) {
@@ -82,11 +75,12 @@ public class CompareController {
                 } else {
                     boolean isTop = !selectedApps.isEmpty()
                             && selectedApps.stream()
-                               .max(Comparator.comparingDouble(Application::getPay))
-                               .filter(a -> a.getId().equals(app.getId()))
-                               .isPresent()
+                            .max(Comparator.comparingDouble(Application::getPay))
+                            .filter(a -> a.getId().equals(app.getId()))
+                            .isPresent()
                             && app.getPay() > 0;
-                    setStyle(isTop ? "-fx-background-color: #f0fdf4;" : "");
+                    // Dark orange tint for best-pay row
+                    setStyle(isTop ? "-fx-background-color: #f9731620;" : "");
                 }
             }
         });
@@ -95,7 +89,6 @@ public class CompareController {
         compareTable.setPlaceholder(new Label("Select applications on the left to compare."));
     }
 
-    /** Loads all applications from storage into the checkbox list. */
     private void loadApplications() {
         List<Application> apps = appController.getAllApplications();
         allApps.setAll(apps);
@@ -106,10 +99,6 @@ public class CompareController {
         });
     }
 
-    /**
-     * Sets up the ListView with checkboxes.
-     * Each cell displays "Company — Role" and toggles the checked state on click.
-     */
     private void setupListView() {
         appListView.setItems(allApps);
         appListView.setCellFactory(CheckBoxListCell.forListView(
@@ -125,14 +114,10 @@ public class CompareController {
         if (allApps.isEmpty()) {
             hintLabel.setText("No applications found. Add some from the Dashboard first.");
         } else {
-            hintLabel.setText("Check applications to compare. Highest pay is highlighted in green.");
+            hintLabel.setText("Check applications to compare. Highest pay is highlighted.");
         }
     }
 
-    /**
-     * Rebuilds the comparison table based on currently checked applications.
-     * Results are sorted by pay descending, matching ApplicationController.compareApplications().
-     */
     private void updateComparison() {
         List<String> checkedIds = checkedState.entrySet().stream()
                 .filter(e -> e.getValue().get())
@@ -146,8 +131,6 @@ public class CompareController {
 
         List<Application> compared = appController.compareApplications(checkedIds);
         selectedApps.setAll(compared);
-
-        // Force row factory to re-evaluate highlight after list changes
         compareTable.refresh();
     }
 }
