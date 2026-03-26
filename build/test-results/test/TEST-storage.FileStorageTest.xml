@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="storage.FileStorageTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-03-26T04:30:59.651Z" hostname="YUGAM" time="0.088">
+  <properties/>
+  <testcase name="saveAndLoadApplications_persistsCorrectly()" classname="storage.FileStorageTest" time="0.039"/>
+  <testcase name="saveAndLoadInterviews_persistsCorrectly()" classname="storage.FileStorageTest" time="0.019"/>
+  <testcase name="updateAndDeleteApplication_works()" classname="storage.FileStorageTest" time="0.012"/>
+  <testcase name="saveAndLoadReminders_persistsCorrectly()" classname="storage.FileStorageTest" time="0.013"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
