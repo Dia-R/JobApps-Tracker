@@ -22,6 +22,10 @@ public class MainController {
 
     private List<Button> navButtons;
 
+    /**
+     * Initialises the controller after the FXML has been loaded.
+     * Resets all navigation buttons to their inactive style and shows the dashboard view.
+     */
     @FXML
     public void initialize() {
         navButtons = List.of(btnDashboard, btnCalendar, btnCompare);
@@ -30,12 +34,17 @@ public class MainController {
         navButtons.forEach(b -> b.getStyleClass().setAll("nav-button"));
         showDashboard();
     }
+
     private void setActive(Button active) {
         for (Button btn : navButtons) {
             btn.getStyleClass().setAll(btn == active ? "nav-button-active" : "nav-button");
         }
     }
 
+    /**
+     * Navigates to the dashboard view and marks its sidebar button as active.
+     * Also wires the new-application callback so the dashboard can trigger navigation.
+     */
     @FXML
     public void showDashboard() {
         setActive(btnDashboard);

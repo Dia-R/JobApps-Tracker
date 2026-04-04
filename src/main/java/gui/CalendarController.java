@@ -3,14 +3,21 @@ package gui;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import logic.ApplicationController;
 import logic.ReminderService;
 import storage.FileStorage;
 
-import java.time.*;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,9 +35,13 @@ public class CalendarController {
     private final ApplicationController appController  = new ApplicationController(fileStorage);
     private final ReminderService       reminderService = new ReminderService(fileStorage);
 
-    /** Maps each date to a list of [label, hexColor] pairs for rendering badges. */
-    private Map<LocalDate, List<String[]>> eventMap;
+    /** Maps each date to a list of event badges to render in the calendar cell. */
+    private Map<LocalDate, List<CalendarEventBadge>> eventMap;
 
+    /**
+     * Initialises the controller after the FXML has been loaded.
+     * Sets the displayed month to the current month and renders the calendar grid.
+     */
     @FXML
     public void initialize() {
         currentMonth = YearMonth.now();
@@ -77,7 +88,7 @@ public class CalendarController {
 
     private void addEvent(LocalDate date, String label, String color) {
         eventMap.computeIfAbsent(date, d -> new ArrayList<>())
-                .add(new String[]{label, color});
+                .add(new CalendarEventBadge(label, color));
     }
 
     private void buildCalendar() {
@@ -106,21 +117,24 @@ public class CalendarController {
                     boolean isToday = cellDate.equals(today);
 
                     cell.getStyleClass().add("calendar-cell");
-                    if (isToday) cell.getStyleClass().add("calendar-cell-today");
+                    if (isToday) {
+                        cell.getStyleClass().add("calendar-cell-today");
+                    }
 
                     Label dayLabel = new Label(String.valueOf(day));
                     dayLabel.getStyleClass().add("calendar-day-label");
-                    if (isToday) dayLabel.getStyleClass().add("calendar-day-label-today");
+                    if (isToday) {
+                        dayLabel.getStyleClass().add("calendar-day-label-today");
+                    }
                     cell.getChildren().add(dayLabel);
-
-                    // Event badges — colors are data-driven so inline style stays
-                    for (String[] event : eventMap.getOrDefault(cellDate, Collections.emptyList())) {
-                        Label badge = new Label(truncate(event[0], 15));
+                    
+                    for (CalendarEventBadge event : eventMap.getOrDefault(cellDate, Collections.emptyList())) {
+                        Label badge = new Label(truncate(event.label(), 15));
                         badge.setMaxWidth(Double.MAX_VALUE);
                         badge.setPadding(new Insets(1, 4, 1, 4));
                         badge.setStyle(
-                                "-fx-background-color: " + event[1] + "22;"
-                                        + "-fx-text-fill: "       + event[1] + ";"
+                                "-fx-background-color: " + event.color() + "22;"
+                                        + "-fx-text-fill: "       + event.color() + ";"
                                         + "-fx-font-size: 10px;"
                                         + "-fx-background-radius: 3;");
                         cell.getChildren().add(badge);
@@ -136,7 +150,17 @@ public class CalendarController {
     }
 
     private String truncate(String s, int max) {
-        if (s == null) return "";
+        if (s == null) {
+            return "";
+        }
         return s.length() <= max ? s : s.substring(0, max) + "…";
     }
+
+    /**
+     * Represents a single event badge rendered inside a calendar day cell.
+     *
+     * @param label Display text shown on the badge.
+     * @param color Hex colour string used for the badge background and text.
+     */
+    private record CalendarEventBadge(String label, String color) {}
 }

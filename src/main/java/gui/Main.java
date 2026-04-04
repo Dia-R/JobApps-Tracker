@@ -16,6 +16,8 @@ public class Main extends Application {
 
     /**
      * Loads the main FXML layout, sets up the scene, and displays the primary stage.
+     *
+     * @param stage The primary stage provided by the JavaFX runtime.
      */
     @Override
     public void start(Stage stage) {

@@ -5,8 +5,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.chart.*;
-import javafx.scene.control.*;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import logic.Application;
 import logic.ApplicationController;
@@ -45,10 +53,20 @@ public class DashboardController {
 
     private Runnable onNewApplication;
 
+    /**
+     * Registers a callback invoked when the user requests to add a new application.
+     * Typically set by {@link MainController} after loading this view.
+     *
+     * @param onNewApplication Runnable to execute when the new-application button is clicked.
+     */
     public void setOnNewApplication(Runnable onNewApplication) {
         this.onNewApplication = onNewApplication;
     }
 
+    /**
+     * Initialises the controller after the FXML has been loaded.
+     * Configures the table, loads all stored applications, and populates the stats and charts.
+     */
     @FXML
     public void initialize() {
         setupTable();
@@ -77,7 +95,7 @@ public class DashboardController {
                     setStyle("");
                 } else {
                     setText(value);
-                    if (value.equals("OFFERED")) {
+                    if (value.equals("OFFER")) {
                         setStyle("-fx-text-fill: #f97316; -fx-font-weight: bold;");
                     } else if (value.equals("INTERVIEWING")) {
                         setStyle("-fx-text-fill: #dd6b20;");
@@ -106,7 +124,6 @@ public class DashboardController {
                 apps.stream().filter(a -> a.getStatus() == ApplicationStatus.REJECTED).count()));
     }
 
-
     private void populateCharts(List<Application> apps) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         for (ApplicationStatus status : ApplicationStatus.values()) {
@@ -131,7 +148,9 @@ public class DashboardController {
 
     @FXML
     private void handleNewApplication() {
-        if (onNewApplication != null) onNewApplication.run();
+        if (onNewApplication != null) {
+            onNewApplication.run();
+        }
     }
 
     @FXML

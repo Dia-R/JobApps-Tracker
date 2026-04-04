@@ -1,7 +1,9 @@
 package gui;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import logic.ApplicationController;
 import logic.ApplicationStatus;
 import storage.FileStorage;
@@ -22,15 +24,21 @@ public class NewApplicationController {
     private final ApplicationController appController =
             new ApplicationController(new FileStorage());
 
-    /** Called by MainController after load — navigates back to dashboard on save or cancel. */
+    /** Callback invoked after a successful save or a cancel action to return to the previous view. */
     private Runnable onSuccess;
 
+    /**
+     * Registers a callback to invoke when the form is submitted successfully or cancelled.
+     * Typically called by {@link MainController} immediately after loading this view.
+     *
+     * @param onSuccess Runnable to execute on success or cancellation.
+     */
     public void setOnSuccess(Runnable onSuccess) {
         this.onSuccess = onSuccess;
     }
 
     /**
-     * Initializes the form after the FXML has been loaded.
+     * Initialises the form after the FXML has been loaded.
      * Populates the status dropdown and sets the default value.
      */
     @FXML
@@ -70,10 +78,15 @@ public class NewApplicationController {
 
         appController.addApplication(company, role, pay, location, status);
 
-        if (onSuccess != null) onSuccess.run();
+        if (onSuccess != null) {
+            onSuccess.run();
+        }
     }
+
     @FXML
     private void handleCancel() {
-        if (onSuccess != null) onSuccess.run();
+        if (onSuccess != null) {
+            onSuccess.run();
+        }
     }
 }

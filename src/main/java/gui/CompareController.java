@@ -1,18 +1,25 @@
 package gui;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import logic.Application;
 import logic.ApplicationController;
 import storage.FileStorage;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -38,6 +45,10 @@ public class CompareController {
     private final ObservableList<Application> allApps      = FXCollections.observableArrayList();
     private final ObservableList<Application> selectedApps = FXCollections.observableArrayList();
 
+    /**
+     * Initialises the controller after the FXML has been loaded.
+     * Sets up the comparison table columns, loads all applications, and configures the checkbox list.
+     */
     @FXML
     public void initialize() {
         setupTable();
@@ -79,8 +90,7 @@ public class CompareController {
                             .filter(a -> a.getId().equals(app.getId()))
                             .isPresent()
                             && app.getPay() > 0;
-                    // Dark orange tint for best-pay row
-                    setStyle(isTop ? "-fx-background-color: #f9731620;" : "");
+                    setStyle(isTop ? "-fx-background-color: #f9731620;" : ""); // Dark orange tint for best-pay row
                 }
             }
         });
@@ -103,7 +113,7 @@ public class CompareController {
         appListView.setItems(allApps);
         appListView.setCellFactory(CheckBoxListCell.forListView(
                 app -> checkedState.getOrDefault(app.getId(), new SimpleBooleanProperty(false)),
-                new javafx.util.StringConverter<>() {
+                new javafx.util.StringConverter<Application>() {
                     @Override public String toString(Application a) {
                         return a == null ? "" : a.getCompanyName() + "  —  " + a.getRoleTitle();
                     }
