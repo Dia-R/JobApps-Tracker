@@ -101,12 +101,13 @@ public class CalendarController {
     private void loadEvents() {
         eventMap = new HashMap<>();
 
-        // Deadlines — red
+        // Deadlines
         appController.getAllApplications().stream()
                 .filter(a -> a.getDeadline() != null)
-                .forEach(a -> addEvent(a.getDeadline(), a.getCompanyName() + " deadline", "#f87171"));
+                .forEach(a -> addEvent(a.getDeadline(),
+                        a.getCompanyName() + " deadline", "badge-deadline"));
 
-        // Interviews — blue
+        // Interviews
         Map<String, String> appIdToCompany = appController.getAllApplications().stream()
                 .collect(Collectors.toMap(
                         logic.Application::getId,
@@ -115,17 +116,18 @@ public class CalendarController {
 
         interviewController.getAllInterviews().forEach(i -> {
             String company = appIdToCompany.getOrDefault(i.getApplicationId(), "Interview");
-            addEvent(i.getDate().toLocalDate(), "R" + i.getRound() + ": " + company, "#60a5fa");
+            addEvent(i.getDate().toLocalDate(),
+                    "R" + i.getRound() + ": " + company, "badge-interview");
         });
 
-        // Reminders — amber
+        // Reminders
         reminderService.getUpcomingReminders(365).forEach(r ->
-                addEvent(r.getTriggerDate(), r.getType().name(), "#fbbf24"));
+                addEvent(r.getTriggerDate(), r.getType().name(), "badge-reminder"));
     }
 
-    private void addEvent(LocalDate date, String label, String color) {
+    private void addEvent(LocalDate date, String label, String styleClass) {
         eventMap.computeIfAbsent(date, d -> new ArrayList<>())
-                .add(new CalendarEventBadge(label, color));
+                .add(new CalendarEventBadge(label, styleClass));
     }
 
     private void buildCalendar() {
@@ -165,16 +167,11 @@ public class CalendarController {
                     }
                     cell.getChildren().add(dayLabel);
 
-                    // Event badges — colors are data-driven so inline style stays
                     for (CalendarEventBadge event : eventMap.getOrDefault(cellDate, Collections.emptyList())) {
                         Label badge = new Label(truncate(event.label(), 15));
                         badge.setMaxWidth(Double.MAX_VALUE);
                         badge.setPadding(new Insets(1, 4, 1, 4));
-                        badge.setStyle(
-                                "-fx-background-color: " + event.color() + "22;"
-                                        + "-fx-text-fill: "       + event.color() + ";"
-                                        + "-fx-font-size: 10px;"
-                                        + "-fx-background-radius: 3;");
+                        badge.getStyleClass().add(event.styleClass());
                         cell.getChildren().add(badge);
                     }
                     day++;
@@ -197,8 +194,8 @@ public class CalendarController {
     /**
      * Represents a single event badge rendered inside a calendar day cell.
      *
-     * @param label Display text shown on the badge.
-     * @param color Hex colour string used for the badge background and text.
+     * @param label      Display text shown on the badge.
+     * @param styleClass CSS class applied to the badge for colour and styling.
      */
-    private record CalendarEventBadge(String label, String color) {}
+    private record CalendarEventBadge(String label, String styleClass) {}
 }

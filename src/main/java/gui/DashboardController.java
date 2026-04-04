@@ -72,7 +72,7 @@ public class DashboardController {
 
     /**
      * Initialises the controller after the FXML has been loaded.
-     * Configures the table, loads all stored applications, and populates the stats and charts.
+     * Configures the table columns and search filter.
      */
     @FXML
     public void initialize() {
@@ -104,19 +104,20 @@ public class DashboardController {
             @Override
             protected void updateItem(String value, boolean empty) {
                 super.updateItem(value, empty);
+                getStyleClass().removeAll("status-offer", "status-interviewing",
+                        "status-rejected", "status-default");
                 if (empty || value == null) {
                     setText(null);
-                    setStyle("");
                 } else {
                     setText(value);
                     if (value.equals("OFFER")) {
-                        setStyle("-fx-text-fill: #f97316; -fx-font-weight: bold;");
+                        getStyleClass().add("status-offer");
                     } else if (value.equals("INTERVIEWING")) {
-                        setStyle("-fx-text-fill: #dd6b20;");
+                        getStyleClass().add("status-interviewing");
                     } else if (value.equals("REJECTED")) {
-                        setStyle("-fx-text-fill: #f87171;");
+                        getStyleClass().add("status-rejected");
                     } else {
-                        setStyle("-fx-text-fill: #d1d5db;");
+                        getStyleClass().add("status-default");
                     }
                 }
             }

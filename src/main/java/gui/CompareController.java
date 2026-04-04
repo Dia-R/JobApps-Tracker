@@ -55,7 +55,7 @@ public class CompareController {
 
     /**
      * Initialises the controller after the FXML has been loaded.
-     * Sets up the comparison table columns, loads all applications, and configures the checkbox list.
+     * Sets up the comparison table columns and row highlighting.
      */
     @FXML
     public void initialize() {
@@ -91,21 +91,21 @@ public class CompareController {
             return new SimpleStringProperty(d != null ? d.toString() : "—");
         });
 
-        // Highlight the highest-pay row in orange (dark-theme friendly)
         compareTable.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(Application app, boolean empty) {
                 super.updateItem(app, empty);
-                if (empty || app == null) {
-                    setStyle("");
-                } else {
+                getStyleClass().remove("row-best-pay");
+                if (!empty && app != null) {
                     boolean isTop = !selectedApps.isEmpty()
                             && selectedApps.stream()
                             .max(Comparator.comparingDouble(Application::getPay))
                             .filter(a -> a.getId().equals(app.getId()))
                             .isPresent()
                             && app.getPay() > 0;
-                    setStyle(isTop ? "-fx-background-color: #f9731620;" : ""); // Dark orange tint for best-pay row
+                    if (isTop) {
+                        getStyleClass().add("row-best-pay");
+                    }
                 }
             }
         });
