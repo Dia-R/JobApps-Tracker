@@ -1,37 +1,26 @@
-# March Meet — API Documentation
+# March Meet — System Architecture & API Documentation
 
-**Version:** 2.0  
-**Author:** Yugam  
-**Last Updated:** March 2026  
-**Stack:** Java 17, JavaFX, Gradle
+**Version:** 2.1 (V1.5 Release Candidate)
+**Author:** Yugam
+**Last Updated:** April 12, 2026
+**Stack:** Java 17, JavaFX 21, Gradle 9.3
 
 ---
 
 ## Table of Contents
-
-1. [Overview](#overview)
-2. [System Architecture](#system-architecture)
-3. [API Endpoint Map](#api-endpoint-map)
-4. [Sequence Diagrams](#sequence-diagrams)
-5. [Data Models](#data-models)
-6. [Storage Format](#storage-format)
-7. [Error Handling](#error-handling)
-8. [Status Flow](#status-flow)
+1. [System Architecture](#1-system-architecture)
+2. [Class Diagram](#2-class-diagram)
+3. [State Diagram (Status Flow)](#3-state-diagram-status-flow)
+4. [Sequence Diagrams](#4-sequence-diagrams)
+5. [API Endpoint Map](#5-api-endpoint-map)
+6. [Storage Format & Security](#6-storage-format--security)
+7. [Error & Exception Handling](#7-error--exception-handling)
 
 ---
 
-## Overview
+## 1. System Architecture
 
-March Meet is a desktop internship application tracker built with JavaFX. It helps students manage applications, interview schedules, deadlines, and offer comparisons from a single dashboard.
-
-The system is divided into three layers:
-- **GUI Layer** — JavaFX controllers and FXML views (Nadia)
-- **Logic Layer** — Application logic, validation, and business rules (Yugam)
-- **Storage Layer** — File-based persistence using plain text `.dat` files (Ashley)
-
----
-
-## System Architecture
+The application strictly adheres to a 3-Tier Layered Architecture to ensure separation of concerns. The GUI layer strictly consumes the Logic layer's API and never interacts directly with the Storage layer.
 
 ```mermaid
 graph TD
@@ -52,8 +41,9 @@ graph TD
     end
 
     subgraph Storage ["Storage Layer (Ashley)"]
-        Interface["Storage (interface)"]
+        Interface["Storage <<interface>>"]
         FileStorage["FileStorage"]
+        InMemory["InMemoryStorage <<test stub>>"]
         DataFiles[("data/\napplications.dat\ninterviews.dat\nreminders.dat")]
     end
 
@@ -71,68 +61,175 @@ graph TD
     AppController --> Interface
     InterviewController --> Interface
     ReminderService --> Interface
-    Interface --> FileStorage
+
+    Interface <|.. FileStorage
+    Interface <|.. InMemory
     FileStorage --> DataFiles
 ```
 
 ---
 
-## API Endpoint Map
+## 2. Class Diagram
 
-Internal method-level API between layers.
+This diagram maps the core domain models and their relationships with the Logic layer controllers and the Storage interface.
 
 ```mermaid
-graph LR
-    Logic["Logic Layer API"]
+classDiagram
+    class Application {
+        -String id
+        -String companyName
+        -String roleTitle
+        -double pay
+        -String location
+        -ApplicationStatus status
+        -LocalDate dateApplied
+        -LocalDate deadline
+        -String notes
+        +getId() String
+        +getCompanyName() String
+        +getRoleTitle() String
+        +getPay() double
+        +getLocation() String
+        +getStatus() ApplicationStatus
+        +getDateApplied() LocalDate
+        +getDeadline() LocalDate
+        +getNotes() String
+        +setStatus(ApplicationStatus)
+        +setDeadline(LocalDate)
+        +setNotes(String)
+    }
 
-    Logic --> A["ApplicationController"]
-    A --> A1["addApplication(company, role, pay, location, status)"]
-    A --> A2["getAllApplications()"]
-    A --> A3["getApplicationById(id)"]
-    A --> A4["updateStatus(id, newStatus)"]
-    A --> A5["deleteApplication(id)"]
-    A --> A6["compareApplications(ids)"]
-    A --> A7["filterByStatus(status)"]
+    class Interview {
+        -String id
+        -String applicationId
+        -int round
+        -LocalDateTime date
+        -String notes
+        +getId() String
+        +getApplicationId() String
+        +getRound() int
+        +getDate() LocalDateTime
+        +getNotes() String
+        +setNotes(String)
+        +setDate(LocalDateTime)
+    }
 
-    Logic --> B["InterviewController"]
-    B --> B1["addInterview(applicationId, round, date)"]
-    B --> B2["getInterviewsByApplication(applicationId)"]
-    B --> B3["updateNotes(interviewId, notes)"]
+    class Reminder {
+        -String id
+        -String applicationId
+        -ReminderType type
+        -LocalDate triggerDate
+        -boolean dismissed
+        +getId() String
+        +getApplicationId() String
+        +getType() ReminderType
+        +getTriggerDate() LocalDate
+        +isDismissed() boolean
+        +dismiss()
+    }
 
-    Logic --> C["ReminderService"]
-    C --> C1["addReminder(applicationId, type, triggerDate)"]
-    C --> C2["getUpcomingReminders(withinDays)"]
-    C --> C3["dismissReminder(reminderId)"]
+    class ApplicationController {
+        -Storage storage
+        +addApplication(company, role, pay, location, status) Application
+        +getAllApplications() List~Application~
+        +getApplicationById(String) Application
+        +updateStatus(String, ApplicationStatus) Application
+        +deleteApplication(String)
+        +compareApplications(List~String~) List~Application~
+    }
 
-    Logic --> D["Storage (interface)"]
-    D --> D1["FileStorage (Ashley's implementation)"]
-    D --> D2["InMemoryStorage (test stub)"]
+    class InterviewController {
+        -Storage storage
+        +addInterview(String, int, LocalDateTime) Interview
+        +getInterviewsByApplication(String) List~Interview~
+        +updateNotes(String, String) Interview
+    }
+
+    class ReminderService {
+        -Storage storage
+        +addReminder(String, ReminderType, LocalDate) Reminder
+        +getUpcomingReminders(int) List~Reminder~
+        +dismissReminder(String)
+    }
+
+    class Storage {
+        <<interface>>
+        +saveApplication(Application)
+        +loadAllApplications() List~Application~
+        +updateApplication(Application)
+        +deleteApplication(String)
+        +saveInterview(Interview)
+        +loadAllInterviews() List~Interview~
+        +updateInterview(Interview)
+        +saveReminder(Reminder)
+        +loadAllReminders() List~Reminder~
+        +updateReminder(Reminder)
+    }
+
+    ApplicationController --> Storage : delegates
+    InterviewController --> Storage : delegates
+    ReminderService --> Storage : delegates
+
+    ApplicationController ..> Application : manages
+    InterviewController ..> Interview : manages
+    ReminderService ..> Reminder : manages
 ```
 
 ---
 
-## Sequence Diagrams
+## 3. State Diagram (Status Flow)
 
-### 1. Add New Application
+This state machine represents the valid application status transitions enforced by the `ApplicationController`. `REJECTED`, `ACCEPTED`, and `WITHDRAWN` are strictly enforced terminal states — no further transitions are permitted once reached.
+
+```mermaid
+stateDiagram-v2
+    [*] --> APPLIED
+
+    APPLIED --> INTERVIEWING
+    APPLIED --> REJECTED
+    APPLIED --> WITHDRAWN
+
+    INTERVIEWING --> OFFER
+    INTERVIEWING --> REJECTED
+    INTERVIEWING --> WITHDRAWN
+
+    OFFER --> ACCEPTED
+    OFFER --> REJECTED
+    OFFER --> WITHDRAWN
+
+    ACCEPTED --> [*]
+    REJECTED --> [*]
+    WITHDRAWN --> [*]
+
+    note right of ACCEPTED: Terminal State
+    note right of REJECTED: Terminal State
+    note left of WITHDRAWN: Terminal State
+```
+
+---
+
+## 4. Sequence Diagrams
+
+### 4.1 Add New Application
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as GUI Layer
+    participant UI as NewApplicationController
     participant Logic as ApplicationController
     participant Storage as FileStorage
 
-    User->>UI: Fills NewApplicationView form
+    User->>UI: Fills in company, role, pay, location, status
     UI->>Logic: addApplication(company, role, pay, location, status)
     Logic->>Logic: Validate fields (non-null, non-blank)
     Logic->>Storage: saveApplication(app)
-    Storage->>Storage: Append to applications.dat
+    Storage->>Storage: Escape fields and append to applications.dat
     Storage-->>Logic: OK
     Logic-->>UI: Return Application object
     UI-->>User: Navigate back to Dashboard
 ```
 
-### 2. Load Dashboard
+### 4.2 Load Dashboard
 
 ```mermaid
 sequenceDiagram
@@ -151,25 +248,32 @@ sequenceDiagram
     UI-->>User: Dashboard rendered
 ```
 
-### 3. Compare Applications
+### 4.3 Add Interview with Referential Integrity Check
+
+When a new interview is added, the Logic layer verifies the parent application exists before saving, preventing orphaned records.
 
 ```mermaid
 sequenceDiagram
     actor User
-    participant UI as CompareController
-    participant Logic as ApplicationController
+    participant UI as GUI Layer
+    participant Logic as InterviewController
     participant Storage as FileStorage
 
-    User->>UI: Selects applications to compare
-    UI->>Logic: compareApplications([id1, id2, ...])
+    User->>UI: Submits New Interview Form
+    UI->>Logic: addInterview(appId, round, date)
     Logic->>Storage: loadAllApplications()
-    Storage-->>Logic: All applications
-    Logic->>Logic: Filter by ids, sort by pay descending
-    Logic-->>UI: Sorted list of Applications
-    UI-->>User: Side-by-side comparison view
+    Storage-->>Logic: List of Applications
+    Logic->>Logic: Verify appId exists in list
+    Logic->>Storage: saveInterview(interview)
+    Storage->>Storage: Escape fields and append to interviews.dat
+    Storage-->>Logic: OK
+    Logic-->>UI: Return Interview object
+    UI-->>User: Refresh view
 ```
 
-### 4. Update Application Status
+### 4.4 Invalid Status Transition
+
+The Logic layer blocks invalid status updates before they reach storage, throwing a typed exception for the GUI to handle.
 
 ```mermaid
 sequenceDiagram
@@ -178,113 +282,123 @@ sequenceDiagram
     participant Logic as ApplicationController
     participant Storage as FileStorage
 
-    User->>UI: Changes status on application
+    User->>UI: Attempts to update status
     UI->>Logic: updateStatus(id, newStatus)
-    Logic->>Logic: getApplicationById(id)
+    Logic->>Storage: loadAllApplications()
+    Storage-->>Logic: Application data
+    Logic->>Logic: Check current status (e.g. REJECTED)
+    Logic--xUI: throw IllegalStateException
+    UI-->>User: Display error message
+```
+
+### 4.5 Compare Applications
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as CompareController
+    participant Logic as ApplicationController
+    participant Storage as FileStorage
+
+    User->>UI: Checks applications to compare
+    UI->>Logic: compareApplications([id1, id2, ...])
     Logic->>Storage: loadAllApplications()
     Storage-->>Logic: All applications
-    Logic->>Logic: Set new status on matching app
-    Logic->>Storage: updateApplication(app)
-    Storage->>Storage: Rewrite applications.dat
-    Storage-->>Logic: OK
-    Logic-->>UI: Updated Application
-    UI-->>User: Dashboard refreshes
+    Logic->>Logic: Filter by ids, sort by pay descending
+    Logic-->>UI: Sorted list of Applications
+    UI-->>User: Side-by-side comparison view with best pay highlighted
 ```
 
 ---
 
-## Data Models
+## 5. API Endpoint Map
 
-### Application
+Internal method-level API exposed by the Logic layer for the GUI layer to consume.
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `String` | UUID — unique identifier |
-| `companyName` | `String` | Name of the company |
-| `roleTitle` | `String` | Job/internship title |
-| `pay` | `double` | Monthly salary |
-| `location` | `String` | Office location |
-| `status` | `ApplicationStatus` | Enum: APPLIED, INTERVIEWING, OFFER, REJECTED, ACCEPTED |
-| `dateApplied` | `LocalDate` | Date application was submitted |
-| `deadline` | `LocalDate` | Offer acceptance deadline (nullable) |
-| `notes` | `String` | Remarks / job scope notes |
+```mermaid
+graph LR
+    Logic["Logic Layer API"]
 
-### Interview
+    Logic --> A["ApplicationController"]
+    A --> A1["addApplication(company, role, pay, location, status)"]
+    A --> A2["getAllApplications()"]
+    A --> A3["getApplicationById(id)"]
+    A --> A4["updateStatus(id, newStatus)"]
+    A --> A5["deleteApplication(id)"]
+    A --> A6["compareApplications(ids)"]
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `String` | UUID — unique identifier |
-| `applicationId` | `String` | FK to Application |
-| `round` | `int` | Interview round number (1, 2, 3...) |
-| `date` | `LocalDateTime` | Scheduled date and time |
-| `notes` | `String` | Notes on interviewer, questions asked |
+    Logic --> B["InterviewController"]
+    B --> B1["addInterview(applicationId, round, date)"]
+    B --> B2["getInterviewsByApplication(applicationId)"]
+    B --> B3["updateNotes(interviewId, notes)"]
 
-### Reminder
+    Logic --> C["ReminderService"]
+    C --> C1["addReminder(applicationId, type, triggerDate)"]
+    C --> C2["getUpcomingReminders(withinDays)"]
+    C --> C3["dismissReminder(reminderId)"]
+```
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `String` | UUID — unique identifier |
-| `applicationId` | `String` | FK to Application |
-| `type` | `ReminderType` | Enum: DEADLINE, INTERVIEW, FOLLOWUP |
-| `triggerDate` | `LocalDate` | When to alert the user |
-| `dismissed` | `boolean` | Whether user has dismissed it |
+### `ApplicationController`
+- `Application addApplication(company, role, pay, location, status)` — throws `IllegalArgumentException` on blank/null company name or role title
+- `List<Application> getAllApplications()`
+- `Application getApplicationById(id)` — throws `IllegalArgumentException` if not found
+- `Application updateStatus(id, newStatus)` — throws `IllegalStateException` if current status is `REJECTED` or `ACCEPTED` (terminal), or if jumping from `APPLIED` directly to `OFFER`
+- `void deleteApplication(id)`
+- `List<Application> compareApplications(List<String> ids)` — sorted by pay descending
+
+### `InterviewController`
+- `Interview addInterview(applicationId, round, date)` — throws `IllegalArgumentException` if parent application does not exist (referential integrity)
+- `List<Interview> getInterviewsByApplication(applicationId)` — sorted by round ascending
+- `Interview updateNotes(interviewId, notes)` — throws `IllegalArgumentException` if interview not found
+
+### `ReminderService`
+- `Reminder addReminder(applicationId, type, triggerDate)` — throws `IllegalArgumentException` if parent application does not exist (referential integrity)
+- `List<Reminder> getUpcomingReminders(withinDays)` — filters dismissed and expired automatically, sorted by date ascending
+- `void dismissReminder(reminderId)` — silently no-ops if ID not found
 
 ---
 
-## Storage Format
+## 6. Storage Format & Security
 
-Ashley's `FileStorage` persists data in plain text `.dat` files in the `data/` directory. Each line is one record, fields separated by `|`. Pipe characters in field values are escaped as `&#124;`.
+Persistence is handled via flat-file storage using pipe delimiters (`|`). All user input is sanitized before writing — any `|` characters are escaped to `&#124;` to prevent data corruption, and unescaped on load. Corrupted lines are silently skipped and logged without crashing the application.
 
-### applications.dat
+### `applications.dat`
 ```
 id|companyName|roleTitle|pay|location|status|dateApplied|deadline|notes
 ```
 Example:
 ```
-abc12345-...|Google|SWE Intern|5000.0|Singapore|APPLIED|2026-03-01|2026-04-01|Great role
+uuid-1234|Google|SWE Intern|5000.0|Singapore|APPLIED|2026-03-01||Loves Python &#124; C++
 ```
 
-### interviews.dat
+### `interviews.dat`
 ```
 id|applicationId|round|date|notes
 ```
 Example:
 ```
-def67890-...|abc12345-...|1|2026-03-15T10:00|Very friendly interviewer
+uuid-5678|uuid-1234|1|2026-03-15T10:00|Very friendly interviewer
 ```
 
-### reminders.dat
+### `reminders.dat`
 ```
 id|applicationId|type|triggerDate|dismissed
 ```
 Example:
 ```
-ghi11111-...|abc12345-...|DEADLINE|2026-04-01|false
+uuid-9999|uuid-1234|DEADLINE|2026-04-01|false
 ```
 
 ---
 
-## Error Handling
+## 7. Error & Exception Handling
 
-| Error | Cause | Behaviour |
-|---|---|---|
-| `IllegalArgumentException` | Null/blank company name or role title | Logic rejects before storage call |
-| `IllegalArgumentException` | ID not found in storage | Thrown by `getApplicationById`, `updateNotes` |
-| `RuntimeException` | Cannot create data directory | Thrown by `FileStorage.ensureDataDir()` |
-| `RuntimeException` | Cannot write to `.dat` file | Thrown by `FileStorage.writeLines()` |
-| Corrupt line in `.dat` file | Parse error | Silently skipped, returns null, filtered out |
-
----
-
-## Status Flow
-
-```mermaid
-stateDiagram-v2
-    [*] --> APPLIED
-    APPLIED --> INTERVIEWING
-    APPLIED --> REJECTED
-    INTERVIEWING --> OFFER
-    INTERVIEWING --> REJECTED
-    OFFER --> ACCEPTED
-    OFFER --> REJECTED
-```
+| Exception | Source Layer | Trigger Condition |
+|:---|:---|:---|
+| `IllegalArgumentException` | Logic | Null/blank Company Name or Role Title on `addApplication` |
+| `IllegalArgumentException` | Logic | ID not found in `getApplicationById` or `updateNotes` |
+| `IllegalArgumentException` | Logic | Parent application not found when calling `addInterview` or `addReminder` (referential integrity) |
+| `IllegalStateException` | Logic | Status transition violation — modifying a `REJECTED` or `ACCEPTED` application, or jumping from `APPLIED` to `OFFER` |
+| `RuntimeException` | Storage | Directory creation fails or I/O permissions block file access |
+| `RuntimeException` | Storage | File read or write failure — logged via `java.util.logging.Logger` |
+| *(Handled internally)* | Storage | Corrupt line in `.dat` file — logged at `WARNING` level and skipped, app continues running |

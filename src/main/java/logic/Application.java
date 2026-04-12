@@ -3,6 +3,10 @@ package logic;
 import java.time.LocalDate;
 import java.util.UUID;
 
+/**
+ * Represents a job application and its associated details.
+ * Tracks company information, role, salary, and current status.
+ */
 public class Application {
     private final String id;
     private String companyName;
@@ -14,7 +18,15 @@ public class Application {
     private LocalDate deadline;
     private String notes;
 
-    // Standard constructor — used when creating a new application
+    /**
+     * Standard constructor for creating a new application.
+     * Generates a new UUID and sets the application date to today.
+     * * @param companyName The name of the company applying to.
+     * @param roleTitle The title of the position.
+     * @param pay The expected or offered salary.
+     * @param location The geographical location of the job.
+     * @param status The initial status of the application.
+     */
     public Application(String companyName, String roleTitle, double pay,
                        String location, ApplicationStatus status) {
         this.id = UUID.randomUUID().toString();
@@ -28,7 +40,18 @@ public class Application {
         this.notes = "";
     }
 
-    // Full constructor — used by FileStorage when loading from disk
+    /**
+     * Full constructor used for loading existing applications from storage.
+     * * @param id The unique identifier of the application.
+     * @param companyName The name of the company applying to.
+     * @param roleTitle The title of the position.
+     * @param pay The expected or offered salary.
+     * @param location The geographical location of the job.
+     * @param status The current status of the application.
+     * @param dateApplied The original date the application was submitted.
+     * @param deadline The deadline for the application or offer (can be null).
+     * @param notes Additional user notes.
+     */
     public Application(String id, String companyName, String roleTitle, double pay,
                        String location, ApplicationStatus status,
                        LocalDate dateApplied, LocalDate deadline, String notes) {
@@ -43,20 +66,97 @@ public class Application {
         this.notes = notes;
     }
 
-    public String getId() { return id; }
-    public String getCompanyName() { return companyName; }
-    public String getRoleTitle() { return roleTitle; }
-    public double getPay() { return pay; }
-    public String getLocation() { return location; }
-    public ApplicationStatus getStatus() { return status; }
-    public LocalDate getDateApplied() { return dateApplied; }
-    public LocalDate getDeadline() { return deadline; }
-    public String getNotes() { return notes; }
+    /**
+     * @return The unique identifier of the application.
+     */
+    public String getId() {
+        return id;
+    }
 
-    public void setStatus(ApplicationStatus status) { this.status = status; }
-    public void setDeadline(LocalDate deadline) { this.deadline = deadline; }
-    public void setNotes(String notes) { this.notes = notes; }
+    /**
+     * @return The name of the company.
+     */
+    public String getCompanyName() {
+        return companyName;
+    }
 
+    /**
+     * @return The job role title.
+     */
+    public String getRoleTitle() {
+        return roleTitle;
+    }
+
+    /**
+     * @return The salary or pay associated with the role.
+     */
+    public double getPay() {
+        return pay;
+    }
+
+    /**
+     * @return The location of the job.
+     */
+    public String getLocation() {
+        return location;
+    }
+
+    /**
+     * @return The current status of the application.
+     */
+    public ApplicationStatus getStatus() {
+        return status;
+    }
+
+    /**
+     * @return The date the application was created/applied.
+     */
+    public LocalDate getDateApplied() {
+        return dateApplied;
+    }
+
+    /**
+     * @return The deadline associated with the application, or null if none.
+     */
+    public LocalDate getDeadline() {
+        return deadline;
+    }
+
+    /**
+     * @return Any custom notes added to the application.
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * Updates the current status of the application.
+     * @param status The new status to apply.
+     */
+    public void setStatus(ApplicationStatus status) {
+        this.status = status;
+    }
+
+    /**
+     * Sets or updates the deadline for the application.
+     * @param deadline The new deadline date.
+     */
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
+
+    /**
+     * Sets or updates the custom notes for the application.
+     * @param notes The new notes text.
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    /**
+     * Returns a formatted string representation of the application details.
+     * @return A summary string of the application.
+     */
     @Override
     public String toString() {
         return String.format("[%s] %s @ %s | %s | $%.0f | %s",

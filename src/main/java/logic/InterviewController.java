@@ -1,7 +1,6 @@
 package logic;
 
 import storage.Storage;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +27,12 @@ public class InterviewController {
         return storage.loadAllInterviews();
     }
 
+    /**
+     * Retrieves all interviews associated with a specific application, sorted by round number.
+     *
+     * @param applicationId The unique ID of the application.
+     * @return A list of interviews for the application, sorted in ascending order by round.
+     */
     public List<Interview> getInterviewsByApplication(String applicationId) {
         return storage.loadAllInterviews().stream()
                 .filter(i -> i.getApplicationId().equals(applicationId))
