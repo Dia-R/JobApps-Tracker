@@ -113,11 +113,15 @@ The JAR will be output to `build/libs/`.
 
 | Test Class | Tests | Status |
 |---|---|---|
+| `CalendarControllerTest` | 6 | ✅ Passing |
+| `CompareControllerTest` | 4 | ✅ Passing |
+| `DashboardControllerTest` | 8 | ✅ Passing |
+| `NewApplicationControllerTest` | 8 | ✅ Passing |
 | `ApplicationControllerTest` | 12 | ✅ Passing |
 | `InterviewControllerTest` | 4 | ✅ Passing |
 | `ReminderServiceTest` | 5 | ✅ Passing |
 | `FileStorageTest` | 40 | ✅ Passing |
-| **Total** | **61** | **100% passing** |
+| **Total** | **87** | **100% passing** |
 
 ---
 
