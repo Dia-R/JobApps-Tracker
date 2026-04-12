@@ -90,9 +90,15 @@ public class CalendarController {
     /**
      * Loads event data and renders the calendar grid.
      * Called by MainController immediately after all dependencies have been injected.
+     * Displays an error dialog if the logic layer throws an unexpected exception.
      */
     public void loadData() {
-        loadEvents();
+        try {
+            loadEvents();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            GuiUtils.showError("Could Not Load Calendar Data", e.getMessage());
+            eventMap = new HashMap<>(); // render an empty calendar rather than crashing
+        }
         buildCalendar();
     }
 
@@ -125,6 +131,8 @@ public class CalendarController {
     /**
      * Builds the event map from all deadlines, interviews, and reminders.
      * Package-private to allow direct invocation from tests without requiring JavaFX.
+     * Throws IllegalArgumentException or IllegalStateException if any logic call fails —
+     * callers are responsible for catching and displaying these.
      */
     void loadEvents() {
         eventMap = new HashMap<>();

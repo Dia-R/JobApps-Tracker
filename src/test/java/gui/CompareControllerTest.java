@@ -16,6 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
  * Each test calls getComparedApplications() directly (package-private) with a
  * list of application IDs, verifying that the returned list is correctly sorted
  * by pay descending and handles edge cases such as an empty selection.
+ *
+ * Coverage:
+ * - getComparedApplications(): empty ID list returns empty result without throwing
+ * - getComparedApplications(): single ID returns the correct application
+ * - getComparedApplications(): two IDs sorted by pay descending
+ * - getComparedApplications(): sort order is independent of input ID order
+ *
+ * Not covered (requires JavaFX runtime):
+ * - loadData(): checkbox list view population and rendering
+ * - updateComparison(): checkbox state change triggers table refresh
+ * - updateComparison(): error dialog shown on IllegalArgumentException or IllegalStateException
+ * - Row highlighting: highest-pay row style applied correctly in TableView
  */
 class CompareControllerTest {
 
@@ -68,7 +80,7 @@ class CompareControllerTest {
                 List.of(low.getId(), high.getId()));
 
         assertEquals(2, result.size());
-        assertEquals("BigTech", result.get(0).getCompanyName()); // highest pay first
+        assertEquals("BigTech", result.get(0).getCompanyName());
         assertEquals("StartupA", result.get(1).getCompanyName());
     }
 
@@ -86,7 +98,6 @@ class CompareControllerTest {
         List<Application> result = controller.getComparedApplications(
                 List.of(c.getId(), a.getId(), b.getId()));
 
-        // B has the highest pay and must always be first
         assertEquals("B", result.get(0).getCompanyName());
         assertEquals(5000, result.get(0).getPay(), 0.001);
     }

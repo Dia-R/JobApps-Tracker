@@ -19,6 +19,20 @@ import static org.junit.jupiter.api.Assertions.*;
  * Each test calls loadEvents() directly (package-private) to verify that
  * deadlines, interviews, and reminders are correctly mapped to dates in the
  * event map, without requiring the JavaFX runtime.
+ *
+ * Coverage:
+ * - loadEvents(): application deadline mapped to correct date
+ * - loadEvents(): application with null deadline produces no event
+ * - loadEvents(): interview date mapped to correct date
+ * - loadEvents(): reminder within 365-day window is included
+ * - loadEvents(): reminder beyond 365-day window is excluded
+ * - loadEvents(): multiple events on the same date are all counted
+ * - getEventCountForDate(): returns 0 when eventMap is empty or date has no events
+ *
+ * Not covered (requires JavaFX runtime):
+ * - buildCalendar(): grid rendering, badge labels, today highlight
+ * - handlePrevMonth() / handleNextMonth(): month navigation
+ * - loadData(): error dialog shown on IllegalArgumentException or IllegalStateException
  */
 class CalendarControllerTest {
 
@@ -67,12 +81,10 @@ class CalendarControllerTest {
      */
     @Test
     void loadEvents_applicationWithNullDeadline_notAddedToEventMap() {
-        // Add an application but do not set a deadline — deadline stays null
         appController.addApplication("Google", "SWE Intern", 5000, "SG", ApplicationStatus.APPLIED);
 
         controller.loadEvents();
 
-        // Check a nearby date to confirm nothing was mapped
         assertEquals(0, controller.getEventCountForDate(LocalDate.now().plusDays(1)));
     }
 
@@ -85,7 +97,6 @@ class CalendarControllerTest {
         Application app = appController.addApplication(
                 "Meta", "PM Intern", 4000, "SG", ApplicationStatus.INTERVIEWING);
         LocalDate interviewDate = LocalDate.now().plusDays(3);
-        // atTime converts the LocalDate to a LocalDateTime as required by addInterview
         interviewController.addInterview(app.getId(), 1, interviewDate.atTime(10, 0));
 
         controller.loadEvents();
@@ -139,12 +150,10 @@ class CalendarControllerTest {
         app.setDeadline(sharedDate);
         storage.updateApplication(app);
 
-        // Interview on the same day as the deadline
         interviewController.addInterview(app.getId(), 1, sharedDate.atTime(14, 0));
 
         controller.loadEvents();
 
-        // Both the deadline event and the interview event should appear on this date
         assertEquals(2, controller.getEventCountForDate(sharedDate));
     }
 }

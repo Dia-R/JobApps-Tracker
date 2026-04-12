@@ -88,9 +88,16 @@ public class DashboardController {
     /**
      * Loads and displays application data after dependencies have been injected.
      * Called by MainController immediately after setAppController.
+     * Displays an error dialog if the logic layer throws an unexpected exception.
      */
     public void loadData() {
-        List<Application> apps = appController.getAllApplications();
+        List<Application> apps;
+        try {
+            apps = appController.getAllApplications();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            GuiUtils.showError("Could Not Load Applications", e.getMessage());
+            return;
+        }
         masterList.setAll(apps);
         populateStats(apps);
         populateCharts(apps);

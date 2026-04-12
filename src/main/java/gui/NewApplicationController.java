@@ -13,6 +13,13 @@ import logic.ApplicationStatus;
  */
 public class NewApplicationController {
 
+    /** Statuses valid for a newly created application. Terminal and intermediate
+     *  statuses (OFFER, REJECTED, ACCEPTED, WITHDRAWN) are excluded. */
+    private static final ApplicationStatus[] INITIAL_STATUSES = {
+            ApplicationStatus.APPLIED,
+            ApplicationStatus.INTERVIEWING
+    };
+
     @FXML private TextField companyField;
     @FXML private TextField roleField;
     @FXML private ChoiceBox<ApplicationStatus> statusChoice;
@@ -47,11 +54,13 @@ public class NewApplicationController {
 
     /**
      * Initialises the form after the FXML has been loaded.
-     * Populates the status dropdown and sets the default value.
+     * Populates the status dropdown with only valid initial statuses and sets
+     * the default value to APPLIED. Terminal and intermediate statuses such as
+     * OFFER, REJECTED, ACCEPTED, and WITHDRAWN are excluded.
      */
     @FXML
     public void initialize() {
-        statusChoice.getItems().setAll(ApplicationStatus.values());
+        statusChoice.getItems().setAll(INITIAL_STATUSES);
         statusChoice.setValue(ApplicationStatus.APPLIED);
         errorLabel.setText("");
     }
@@ -82,6 +91,7 @@ public class NewApplicationController {
     /**
      * Validates required fields and saves the new application via ApplicationController.
      * Deadline and notes can be set later via an edit screen.
+     * Displays an error dialog if the logic layer rejects the input.
      */
     @FXML
     private void handleSubmit() {
@@ -107,7 +117,13 @@ public class NewApplicationController {
         }
 
         String location = locationField.getText().trim();
-        appController.addApplication(company, role, pay, location, status);
+
+        try {
+            appController.addApplication(company, role, pay, location, status);
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            GuiUtils.showError("Could Not Save Application", e.getMessage());
+            return;
+        }
 
         if (onSuccess != null) {
             onSuccess.run();

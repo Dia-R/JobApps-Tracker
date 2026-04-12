@@ -69,9 +69,15 @@ public class CompareController {
     /**
      * Loads application data and configures the list view after dependencies have been injected.
      * Called by MainController immediately after setAppController.
+     * Displays an error dialog if the logic layer throws an unexpected exception.
      */
     public void loadData() {
-        loadApplications();
+        try {
+            loadApplications();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            GuiUtils.showError("Could Not Load Applications", e.getMessage());
+            return;
+        }
         setupListView();
     }
 
@@ -173,8 +179,12 @@ public class CompareController {
             return;
         }
 
-        List<Application> compared = appController.compareApplications(checkedIds);
-        selectedApps.setAll(compared);
-        compareTable.refresh();
+        try {
+            List<Application> compared = appController.compareApplications(checkedIds);
+            selectedApps.setAll(compared);
+            compareTable.refresh();
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            GuiUtils.showError("Could Not Compare Applications", e.getMessage());
+        }
     }
 }

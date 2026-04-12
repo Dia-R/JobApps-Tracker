@@ -15,6 +15,22 @@ import static org.junit.jupiter.api.Assertions.*;
  * object and a keyword string, verifying that the method correctly determines
  * whether the application matches the search term without requiring JavaFX.
  * The method checks both company name and role title, case-insensitively.
+ *
+ * Coverage:
+ * - matchesSearch(): empty keyword matches all applications
+ * - matchesSearch(): full company name match (case-insensitive)
+ * - matchesSearch(): partial company name match
+ * - matchesSearch(): uppercase keyword matches lowercase-stored name
+ * - matchesSearch(): role title partial match
+ * - matchesSearch(): role title full match with mixed case
+ * - matchesSearch(): keyword present only in location field does not match
+ * - matchesSearch(): keyword not present in any field returns false
+ *
+ * Not covered (requires JavaFX runtime):
+ * - loadData(): stat card population and chart rendering
+ * - handleSearch(): FilteredList predicate is applied on user input
+ * - handleNewApplication(): onNewApplication callback is invoked
+ * - loadData(): error dialog shown on IllegalArgumentException or IllegalStateException
  */
 class DashboardControllerTest {
 
