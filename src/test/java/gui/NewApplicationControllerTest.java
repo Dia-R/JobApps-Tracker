@@ -12,6 +12,23 @@ import static org.junit.jupiter.api.Assertions.*;
  * Each test calls validateInput() directly (package-private) using plain strings,
  * which avoids the need to set up JavaFX text fields or the full form view.
  * A null return value means the input is valid; a non-null string is the error message.
+ *
+ * Coverage:
+ * - validateInput(): valid company, role, and numeric pay returns null
+ * - validateInput(): empty pay field is accepted (pay is optional)
+ * - validateInput(): zero pay is accepted as a valid numeric value
+ * - validateInput(): empty company name is rejected
+ * - validateInput(): empty role title is rejected
+ * - validateInput(): both company and role empty is rejected
+ * - validateInput(): non-numeric pay string is rejected
+ * - validateInput(): mixed alphanumeric pay string is rejected
+ *
+ * Not covered (requires JavaFX runtime):
+ * - handleSubmit(): form submission wires validateInput() result to errorLabel
+ * - handleSubmit(): error dialog shown on IllegalArgumentException or IllegalStateException from logic
+ * - handleSubmit(): onSuccess callback is invoked after successful save
+ * - handleCancel(): onSuccess callback is invoked on cancel
+ * - initialize(): status dropdown is populated with ApplicationStatus values
  */
 class NewApplicationControllerTest {
 
