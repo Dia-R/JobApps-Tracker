@@ -1,32 +1,29 @@
 package gui;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.util.StringConverter;
 import logic.Application;
 import logic.ApplicationController;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * Controls the compare view of the application.
- * Lets users select applications via checkboxes and compare them side by side.
+ * Lets users select applications from the list and compare them side by side.
  */
 public class CompareController {
 
@@ -44,8 +41,7 @@ public class CompareController {
 
     private ApplicationController appController;
 
-    private final Map<String, BooleanProperty> checkedState = new LinkedHashMap<>();
-    private final ObservableList<Application> allApps      = FXCollections.observableArrayList();
+    private final ObservableList<Application> allApps = FXCollections.observableArrayList();
     private final ObservableList<Application> selectedApps = FXCollections.observableArrayList();
 
     /**
@@ -60,15 +56,32 @@ public class CompareController {
 
     /**
      * Initialises the controller after the FXML has been loaded.
-     * Sets up the comparison table columns and row highlighting.
+     * Sets up the comparison table, list selection, and row highlighting.
      */
     @FXML
     public void initialize() {
         setupTable();
+        appListView.setItems(allApps);
+        appListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        appListView.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Application app, boolean empty) {
+                super.updateItem(app, empty);
+                if (empty || app == null) {
+                    setText(null);
+                } else {
+                    setText(app.getCompanyName() + "  —  " + app.getRoleTitle());
+                }
+            }
+        });
+        appListView.getSelectionModel().getSelectedItems().addListener(
+                (ListChangeListener.Change<? extends Application> change) -> {
+                    updateComparisonFromSelection();
+                });
     }
 
     /**
-     * Loads application data and configures the list view after dependencies have been injected.
+     * Loads application data after dependencies have been injected.
      * Called by MainController immediately after setAppController.
      * Displays an error dialog if the logic layer throws an unexpected exception.
      */
@@ -79,7 +92,7 @@ public class CompareController {
             GuiUtils.showError("Could Not Load Applications", e.getMessage());
             return;
         }
-        setupListView();
+        updateHintLabel();
     }
 
     /**
@@ -97,6 +110,8 @@ public class CompareController {
     }
 
     private void setupTable() {
+        compareTable.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         colCompany.setCellValueFactory(c ->
                 new SimpleStringProperty(c.getValue().getCompanyName()));
         colRole.setCellValueFactory(c ->
@@ -116,7 +131,6 @@ public class CompareController {
             return new SimpleStringProperty(d != null ? d.toString() : "—");
         });
 
-        // Highlight the row with the highest pay among selected applications
         compareTable.setRowFactory(tv -> new TableRow<>() {
             @Override
             protected void updateItem(Application app, boolean empty) {
@@ -142,53 +156,32 @@ public class CompareController {
 
     private void loadApplications() {
         List<Application> apps = appController.getAllApplications();
+        appListView.getSelectionModel().clearSelection();
         allApps.setAll(apps);
-        apps.forEach(a -> {
-            BooleanProperty checked = new SimpleBooleanProperty(false);
-            checked.addListener((obs, wasChecked, isNowChecked) -> updateComparison());
-            checkedState.put(a.getId(), checked);
-        });
     }
 
-    private void setupListView() {
-        appListView.setItems(allApps);
-        appListView.setCellFactory(CheckBoxListCell.forListView(
-                app -> checkedState.getOrDefault(
-                        app.getId(), new SimpleBooleanProperty(false)),
-                new StringConverter<Application>() {
-                    @Override
-                    public String toString(Application a) {
-                        return a == null
-                                ? "" : a.getCompanyName() + "  —  " + a.getRoleTitle();
-                    }
-
-                    @Override
-                    public Application fromString(String s) {
-                        return null;
-                    }
-                }
-        ));
-
+    private void updateHintLabel() {
         if (allApps.isEmpty()) {
             hintLabel.setText("No applications found. Add some from the Dashboard first.");
         } else {
-            hintLabel.setText("Check applications to compare. Highest pay is highlighted.");
+            hintLabel.setText("Click an app to compare. Hold ⌘ (Mac) or Ctrl (Windows) and click to select several.");
         }
     }
 
-    private void updateComparison() {
-        List<String> checkedIds = checkedState.entrySet().stream()
-                .filter(e -> e.getValue().get())
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-
-        if (checkedIds.isEmpty()) {
+    private void updateComparisonFromSelection() {
+        List<Application> selected = new ArrayList<>(
+                appListView.getSelectionModel().getSelectedItems());
+        if (selected.isEmpty()) {
             selectedApps.clear();
             return;
         }
 
+        List<String> ids = selected.stream()
+                .map(Application::getId)
+                .collect(Collectors.toList());
+
         try {
-            List<Application> compared = appController.compareApplications(checkedIds);
+            List<Application> compared = appController.compareApplications(ids);
             selectedApps.setAll(compared);
             compareTable.refresh();
         } catch (RuntimeException e) {

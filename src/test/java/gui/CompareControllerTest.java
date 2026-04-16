@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - getComparedApplications(): sort order is independent of input ID order
  *
  * Not covered (requires JavaFX runtime):
- * - loadData(): checkbox list view population and rendering
- * - updateComparison(): checkbox state change triggers table refresh
- * - updateComparison(): error dialog shown on IllegalArgumentException or IllegalStateException
+ * - loadData(): list view population and multi-select rendering
+ * - updateComparisonFromSelection(): selection change triggers table refresh
+ * - updateComparisonFromSelection(): error dialog shown on runtime failures
  * - Row highlighting: highest-pay row style applied correctly in TableView
  */
 class CompareControllerTest {

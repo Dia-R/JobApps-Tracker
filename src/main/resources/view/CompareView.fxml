@@ -10,7 +10,7 @@
 
     <VBox styleClass="compare-sidebar">
         <Label text="Applications" styleClass="section-title"/>
-        <Label text="Check apps to compare" styleClass="hint-label"/>
+        <Label text="Select apps below (⌘/Ctrl-click for multiple)" styleClass="hint-label"/>
         <Region prefHeight="6"/>
         <ListView fx:id="appListView" VBox.vgrow="ALWAYS"/>
     </VBox>
@@ -21,12 +21,12 @@
         <Region prefHeight="6"/>
         <TableView fx:id="compareTable" VBox.vgrow="ALWAYS" styleClass="table-view">
             <columns>
-                <TableColumn fx:id="colCompany"  text="Company"  prefWidth="160"/>
-                <TableColumn fx:id="colRole"     text="Role"     prefWidth="160"/>
-                <TableColumn fx:id="colPay"      text="Pay"      prefWidth="90"/>
-                <TableColumn fx:id="colLocation" text="Location" prefWidth="120"/>
-                <TableColumn fx:id="colStatus"   text="Status"   prefWidth="110"/>
-                <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="100"/>
+                <TableColumn fx:id="colCompany"  text="Company"  prefWidth="140" minWidth="80"  maxWidth="250"/>
+                <TableColumn fx:id="colRole"     text="Role"     prefWidth="130" minWidth="80"  maxWidth="230"/>
+                <TableColumn fx:id="colPay"      text="Pay"      prefWidth="80"  minWidth="60"  maxWidth="120"/>
+                <TableColumn fx:id="colLocation" text="Location" prefWidth="100" minWidth="60"  maxWidth="160"/>
+                <TableColumn fx:id="colStatus"   text="Status"   prefWidth="110" minWidth="80"  maxWidth="150"/>
+                <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="100" minWidth="80"  maxWidth="140"/>
             </columns>
         </TableView>
     </VBox>
