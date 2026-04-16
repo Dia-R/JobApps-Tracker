@@ -262,6 +262,23 @@
 .feedback-success { -fx-text-fill: #3ea87a; -fx-font-size: 12px; }
 .feedback-neutral { -fx-text-fill: #a0a4be; -fx-font-size: 12px; }
 
+/* ── Delete Button (destructive action, combined with secondary-button) */
+.delete-button {
+    -fx-text-fill: #d45b5b;
+    -fx-border-color: #fde8e8;
+}
+
+.delete-button:hover {
+    -fx-text-fill: #c04040;
+    -fx-border-color: #f9d0d0;
+}
+
+/* ── Form Value (read-only label values in edit/detail forms) ─ */
+.form-value {
+    -fx-text-fill: #2d2f3e;
+    -fx-font-size: 13px;
+}
+
 /* ── Table ─────────────────────────────────────────────────── */
 .table-view {
     -fx-background-color: #ffffff;

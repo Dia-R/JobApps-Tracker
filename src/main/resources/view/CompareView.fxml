@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <HBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="gui.CompareController"
@@ -10,7 +14,7 @@
 
     <VBox styleClass="compare-sidebar">
         <Label text="Applications" styleClass="section-title"/>
-        <Label text="Select apps below (⌘/Ctrl-click for multiple)" styleClass="hint-label"/>
+        <Label text="Select apps below (Ctrl/Cmd-click for multiple)" styleClass="hint-label"/>
         <Region prefHeight="6"/>
         <ListView fx:id="appListView" VBox.vgrow="ALWAYS"/>
     </VBox>

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <ScrollPane fitToWidth="true" xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.NewApplicationController"
@@ -46,8 +54,8 @@
             <Label fx:id="errorLabel" styleClass="error-label"/>
 
             <HBox spacing="14" alignment="CENTER_RIGHT">
-                <Button text="Cancel"             styleClass="secondary-button" onAction="#handleCancel"/>
-                <Button text="Save Application"   styleClass="primary-button"   onAction="#handleSubmit"/>
+                <Button text="Cancel"           styleClass="secondary-button" onAction="#handleCancel"/>
+                <Button text="Save Application" styleClass="primary-button"   onAction="#handleSubmit"/>
             </HBox>
 
         </VBox>

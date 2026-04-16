@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <ScrollPane fitToWidth="true" xmlns:fx="http://javafx.com/fxml"
             fx:controller="gui.EditApplicationController"
@@ -45,7 +55,7 @@
                            GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
                 <Label text="Applied On" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                <Label fx:id="dateAppliedLabel" style="-fx-text-fill: #2d2f3e;"
+                <Label fx:id="dateAppliedLabel" styleClass="form-value"
                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
             </GridPane>
         </VBox>
@@ -87,9 +97,8 @@
             <HBox spacing="14" alignment="CENTER_LEFT">
                 <Button text="Save Changes" styleClass="primary-button" onAction="#handleSave"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button fx:id="deleteButton" text="Delete Application" styleClass="secondary-button"
-                        onAction="#handleDelete"
-                        style="-fx-text-fill: #d45b5b; -fx-border-color: #fde8e8;"/>
+                <Button text="Delete Application" styleClass="secondary-button delete-button"
+                        onAction="#handleDelete"/>
             </HBox>
         </VBox>
 
