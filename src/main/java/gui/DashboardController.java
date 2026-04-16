@@ -244,10 +244,15 @@ public class DashboardController {
 
     private void populateCharts(List<Application> apps) {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
+        long maxCount = 0;
         for (ApplicationStatus status : ApplicationStatus.values()) {
             long count = apps.stream().filter(a -> a.getStatus() == status).count();
             series.getData().add(new XYChart.Data<>(status.name(), count));
+            if (count > maxCount) {
+                maxCount = count;
+            }
         }
+        barYAxis.setUpperBound(Math.max(maxCount + 1, 2));
         statusBarChart.getData().add(series);
         statusBarChart.setBarGap(3);
         statusBarChart.setCategoryGap(12);

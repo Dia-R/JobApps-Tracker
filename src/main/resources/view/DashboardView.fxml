@@ -57,7 +57,8 @@
                     <CategoryAxis fx:id="barXAxis" tickLabelRotation="0"/>
                 </xAxis>
                 <yAxis>
-                    <NumberAxis fx:id="barYAxis" minorTickVisible="false" tickUnit="1"/>
+                    <NumberAxis fx:id="barYAxis" minorTickVisible="false" tickUnit="1"
+                                autoRanging="false" lowerBound="0"/>
                 </yAxis>
             </BarChart>
         </VBox>
@@ -86,14 +87,15 @@
     </TextField>
 
     <!-- Applications table -->
-    <TableView fx:id="applicationTable" VBox.vgrow="ALWAYS" styleClass="table-view">
+    <TableView fx:id="applicationTable" VBox.vgrow="ALWAYS" styleClass="table-view"
+               columnResizePolicy="CONSTRAINED_RESIZE_POLICY">
         <columns>
-            <TableColumn fx:id="colCompany"  text="Company"  prefWidth="160"/>
-            <TableColumn fx:id="colRole"     text="Role"     prefWidth="160"/>
-            <TableColumn fx:id="colStatus"   text="Status"   prefWidth="130"/>
-            <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="110"/>
-            <TableColumn fx:id="colAction"   text=""         prefWidth="90" sortable="false"
-                         minWidth="90" maxWidth="90"/>
+            <TableColumn fx:id="colCompany"  text="Company"  minWidth="120"/>
+            <TableColumn fx:id="colRole"     text="Role"     minWidth="120"/>
+            <TableColumn fx:id="colStatus"   text="Status"   minWidth="100" maxWidth="160"/>
+            <TableColumn fx:id="colDeadline" text="Deadline" minWidth="90"  maxWidth="140"/>
+            <TableColumn fx:id="colAction"   text=""         minWidth="90"  maxWidth="90"
+                         sortable="false"/>
         </columns>
         <placeholder>
             <Label text="No applications yet — click '+ New Application' to get started."
