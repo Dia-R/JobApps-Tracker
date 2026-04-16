@@ -502,7 +502,10 @@
 .list-cell:hover    { -fx-background-color: #f4f3ff; }
 .list-cell:selected { -fx-background-color: #eeebff; -fx-text-fill: #7c5cfc; }
 
-.row-best-pay { -fx-background-color: #e4f5ee; }
+.row-best-pay,
+.table-row-cell.row-best-pay,
+.table-row-cell.row-best-pay:odd,
+.table-row-cell.row-best-pay:even { -fx-background-color: #e4f5ee; }
 
 /* ── New Application Form ──────────────────────────────────── */
 .form-page      { -fx-background-color: #f5f6fa; }

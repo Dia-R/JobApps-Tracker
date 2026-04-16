@@ -38,7 +38,7 @@ This diagram maps the core domain models and their relationships with the Logic 
 
 **Source:** `ClassDiagram.puml`
 
-![Class Diagram](ClassDiagram.png)
+![Class Diagram](images/ClassDiagram.png)
 
 ---
 
@@ -68,13 +68,13 @@ This diagram shows the main user workflow through the application, covering all 
 
 **Source:** `SequenceDiagram-AddNewApplication.puml`
 
-![Sequence Diagram — Add New Application](SequenceDiagram-AddNewApplication.png)
+![Sequence Diagram — Add New Application](images/SequenceDiagram-AddNewApplication.png)
 
 ### 5.2 Load Dashboard
 
 **Source:** `SequenceDiagram-LoadDashboard.puml`
 
-![Sequence Diagram — Load Dashboard](SequenceDiagram-LoadDashboard.png)
+![Sequence Diagram — Load Dashboard](images/SequenceDiagram-LoadDashboard.png)
 
 ### 5.3 Edit Application Details
 
@@ -82,7 +82,7 @@ When the user clicks the Edit button on a dashboard row, the application's detai
 
 **Source:** `SequenceDiagram-EditApplication.puml`
 
-![Sequence Diagram — Edit Application](SequenceDiagram-EditApplication.png)
+![Sequence Diagram — Edit Application](images/SequenceDiagram-EditApplication.png)
 
 ### 5.4 Add Interview with Referential Integrity Check
 
@@ -90,7 +90,7 @@ When a new interview is added, the Logic layer verifies the parent application e
 
 **Source:** `SequenceDiagram-AddInterview.puml`
 
-![Sequence Diagram — Add Interview](SequenceDiagram-AddInterview.png)
+![Sequence Diagram — Add Interview](images/SequenceDiagram-AddInterview.png)
 
 ### 5.5 Invalid Status Transition
 
@@ -98,13 +98,13 @@ The Logic layer blocks invalid status updates before they reach storage, throwin
 
 **Source:** `SequenceDiagram-InvalidStatusTransition.puml`
 
-![Sequence Diagram — Invalid Status Transition](SequenceDiagram-InvalidStatusTransition.png)
+![Sequence Diagram — Invalid Status Transition](images/SequenceDiagram-InvalidStatusTransition.png)
 
 ### 5.6 Compare Applications
 
 **Source:** `SequenceDiagram-CompareApplications.puml`
 
-![Sequence Diagram — Compare Applications](SequenceDiagram-CompareApplications.png)
+![Sequence Diagram — Compare Applications](images/SequenceDiagram-CompareApplications.png)
 
 ---
 

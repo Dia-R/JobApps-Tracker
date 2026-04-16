@@ -85,9 +85,7 @@ public class EditApplicationController {
         statusChoice.setValue(app.getStatus());
         currentStatusLabel.setText("Currently: " + app.getStatus().name());
 
-        if (app.getDeadline() != null) {
-            deadlinePicker.setValue(app.getDeadline());
-        }
+        deadlinePicker.setValue(app.getDeadline());
 
         notesArea.setText(app.getNotes() != null ? app.getNotes() : "");
         feedbackLabel.setText("");
