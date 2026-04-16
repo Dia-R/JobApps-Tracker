@@ -311,10 +311,12 @@
     -fx-text-fill: #7c5cfc;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-padding: 4 14;
-    -fx-font-size: 11px;
+    -fx-padding: 4 16;
+    -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-cursor: hand;
+    -fx-min-width: 60;
+    -fx-text-overrun: clip;
 }
 
 .table-edit-button:hover {

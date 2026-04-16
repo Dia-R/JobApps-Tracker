@@ -88,11 +88,12 @@
     <!-- Applications table -->
     <TableView fx:id="applicationTable" VBox.vgrow="ALWAYS" styleClass="table-view">
         <columns>
-            <TableColumn fx:id="colCompany"  text="Company"  prefWidth="170"/>
-            <TableColumn fx:id="colRole"     text="Role"     prefWidth="170"/>
+            <TableColumn fx:id="colCompany"  text="Company"  prefWidth="160"/>
+            <TableColumn fx:id="colRole"     text="Role"     prefWidth="160"/>
             <TableColumn fx:id="colStatus"   text="Status"   prefWidth="130"/>
             <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="110"/>
-            <TableColumn fx:id="colAction"   text=""         prefWidth="70" sortable="false"/>
+            <TableColumn fx:id="colAction"   text=""         prefWidth="90" sortable="false"
+                         minWidth="90" maxWidth="90"/>
         </columns>
         <placeholder>
             <Label text="No applications yet — click '+ New Application' to get started."
