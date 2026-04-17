@@ -8,6 +8,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.stage.Window;
 import logic.Application;
 import logic.ApplicationController;
 import logic.ApplicationStatus;
@@ -284,6 +285,10 @@ public class EditApplicationController {
         confirm.setHeaderText("Are you sure?");
         confirm.setContentText("This will permanently delete the application for "
                 + application.getCompanyName() + " — " + application.getRoleTitle() + ".");
+
+        Window.getWindows().stream()
+                .filter(Window::isShowing)
+                .findFirst().ifPresent(confirm::initOwner);
 
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
