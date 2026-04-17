@@ -234,7 +234,7 @@ public class FileStorage implements Storage {
                 Files.createDirectories(this.dataDir);
             }
         } catch (IOException e) {
-            throw new RuntimeException("CRITICAL: Data directory creation failed: " + this.dataDir, e);
+            throw new StorageException("CRITICAL: Data directory creation failed: " + this.dataDir, e);
         }
     }
 
@@ -254,7 +254,7 @@ public class FileStorage implements Storage {
             return Files.readAllLines(path);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to read data from: " + path, e);
-            throw new RuntimeException("Error accessing storage file. Please check file permissions.", e);
+            throw new StorageException("Error accessing storage file. Please check file permissions.", e);
         }
     }
 
@@ -271,7 +271,7 @@ public class FileStorage implements Storage {
             Files.write(path, lines);
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to write data to: " + path, e);
-            throw new RuntimeException("Failed to save data. Storage may be full or inaccessible.", e);
+            throw new StorageException("Failed to save data. Storage may be full or inaccessible.", e);
         }
     }
 

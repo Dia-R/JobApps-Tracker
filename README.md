@@ -1,6 +1,6 @@
 ## JobApps Tracker
 
-**Version:** V1.5 — Release Candidate
+**Version:** V1.6 — Public Release
 A desktop application for NUS/NTU students to track internship applications, interviews, deadlines, and offers — all in one place.
 
 ---
@@ -43,7 +43,9 @@ JobApps-Tracker/
 ├── build.gradle
 ├── settings.gradle
 ├── docs/
-│   └── API_DOCUMENTATION.md
+│   ├── DeveloperGuide.md
+│   ├── UserGuide.md
+│   └── SSD.md
 └── src/
     ├── main/java/
     │   ├── gui/                        ← JavaFX controllers (Nadia)
@@ -53,7 +55,8 @@ JobApps-Tracker/
     │   │   ├── DashboardController.java
     │   │   ├── CalendarController.java
     │   │   ├── CompareController.java
-    │   │   └── NewApplicationController.java
+    │   │   ├── NewApplicationController.java
+    │   │   └── EditApplicationController.java
     │   ├── logic/                      ← Business logic (Yugam)
     │   │   ├── Application.java
     │   │   ├── ApplicationController.java
@@ -65,13 +68,15 @@ JobApps-Tracker/
     │   │   └── ReminderType.java
     │   └── storage/                    ← File persistence (Ashley)
     │       ├── Storage.java
-    │       └── FileStorage.java
+    │       ├── FileStorage.java
+    │       └── StorageException.java
     ├── main/resources/view/            ← FXML views + CSS (Nadia)
     │   ├── MainWindow.fxml
     │   ├── DashboardView.fxml
     │   ├── CalendarView.fxml
     │   ├── CompareView.fxml
     │   ├── NewApplicationView.fxml
+    │   ├── EditApplicationView.fxml
     │   └── styles.css
     └── test/java/
         ├── logic/                      ← Logic tests (Yugam)
@@ -117,12 +122,11 @@ The JAR will be output to `build/libs/`.
 | `CompareControllerTest` | 4 | ✅ Passing |
 | `DashboardControllerTest` | 8 | ✅ Passing |
 | `NewApplicationControllerTest` | 8 | ✅ Passing |
-| `ApplicationControllerTest` | 12 | ✅ Passing |
-| `InterviewControllerTest` | 4 | ✅ Passing |
+| `ApplicationControllerTest` | 22 | ✅ Passing |
+| `InterviewControllerTest` | 5 | ✅ Passing |
 | `ReminderServiceTest` | 5 | ✅ Passing |
 | `FileStorageTest` | 40 | ✅ Passing |
-| **Total** | **87** | **100% passing** |
-
+| **Total** | **98** | **100% passing** |
 ---
 
 ## Data Storage
@@ -136,23 +140,12 @@ data/
 └── reminders.dat
 ```
 
-Each file stores one record per line with fields separated by `|`. Pipe characters in user input are escaped as `&#124;` to prevent data corruption. Corrupted lines are silently skipped and logged without crashing the app. See [`docs/API_DOCUMENTATION.md`](docs/API_DOCUMENTATION.md) for full format details.
-
----
-
-## Known Limitations (Not Yet Implemented)
-
-The following features from the original PRD are **not yet implemented** and are planned for future iterations:
-
-- **Document Vault** — upload and attach resumes, cover letters, or offer letters to applications
-- **Travel Time** — estimate commute time to office locations
-- **Job Scope Filtering** — filter or search applications by job scope, salary range, or location
-- **Calendar Date Drill-Down** — click a date on the calendar to view detailed events for that day
-- **Offer Deadline Setting from UI** — set or edit offer acceptance deadlines directly from the dashboard
-- **Follow-Up Reminder Notes** — attach custom notes or target dates to follow-up reminders
+Each file stores one record per line with fields separated by `|`. Pipe characters in user input are escaped as `&#124;` to prevent data corruption. Corrupted lines are silently skipped and logged without crashing the app. See the [Developer Guide](docs/DeveloperGuide.md) for full format details.
 
 ---
 
 ## Documentation
 
-Full API documentation including architecture diagrams, class diagrams, sequence diagrams, and data models is available in [`docs/API_DOCUMENTATION.md`](docs/API_DOCUMENTATION.md).
+Comprehensive project documentation is available in the `docs/` directory:
+* [**User Guide (UG)**](docs/UserGuide.md) - Instructions for end-users on navigating the dashboard, calendar, and comparison tools.
+* [**Developer Guide (DG)**](docs/DeveloperGuide.md) - Full API documentation, system architecture, UML class diagrams, and sequence diagrams for future contributors.

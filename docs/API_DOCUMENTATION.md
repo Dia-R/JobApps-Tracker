@@ -1,6 +1,6 @@
 # March Meet — System Architecture & API Documentation
 
-**Version:** 3.0 (V2.0 Release)
+**Version:** V1.6 — Public Release
 **Author:** Yugam
 **Last Updated:** April 16, 2026
 **Stack:** Java 17, JavaFX 21, Gradle 9.3
@@ -192,10 +192,10 @@ uuid-9999|uuid-1234|DEADLINE|2026-04-01|false
 | `deadline` field is empty string | Parsed as `null` (`LocalDate`) — deadline is optional |
 | Duplicate application ID on save | `saveApplication()` checks for existing ID and skips the duplicate |
 | Duplicate interview/reminder ID on save | **Not checked** — callers are responsible for not saving the same object twice |
-| IOException on read | Logged at `SEVERE`, throws `RuntimeException` — GUI catches and shows error dialog |
-| IOException on write | Logged at `SEVERE`, throws `RuntimeException` — GUI catches and shows error dialog |
+| IOException on read | Logged at `SEVERE`, throws `StorageException` — GUI catches and shows error dialog |
+| IOException on write | Logged at `SEVERE`, throws `StorageException` — GUI catches and shows error dialog |
 | Data directory does not exist | Created automatically by `ensureDataDir()` on first write |
-| Data directory cannot be created | Throws `RuntimeException` — GUI catches and shows error dialog |
+| Data directory cannot be created | Throws `StorageException` — GUI catches and shows error dialog |
 
 ### ID Generation
 
@@ -217,6 +217,6 @@ All entity IDs (`Application`, `Interview`, `Reminder`) are generated via `UUID.
 | `IllegalArgumentException` | Logic | ID not found in `getApplicationById`, `updateStatus`, `updateDetails`, `updateDeadline`, `updateNotes`, `deleteApplication`, or `updateNotes` (InterviewController) |
 | `IllegalArgumentException` | Logic | Parent application not found when calling `addInterview` or `addReminder` (referential integrity) |
 | `IllegalStateException` | Logic | Status transition violation — modifying a `REJECTED`, `ACCEPTED`, or `WITHDRAWN` application, or jumping from `APPLIED` to `OFFER` |
-| `RuntimeException` | Storage | Directory creation fails or I/O permissions block file access |
-| `RuntimeException` | Storage | File read or write failure — logged via `java.util.logging.Logger` |
+| `StorageException` | Storage | Directory creation fails or I/O permissions block file access |
+| `StorageException` | Storage | File read or write failure — logged via `java.util.logging.Logger` |
 | *(Handled internally)* | Storage | Corrupt line in `.dat` file — logged at `WARNING` level and skipped, app continues running |

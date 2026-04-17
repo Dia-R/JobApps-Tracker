@@ -4,9 +4,9 @@
 
 **Project Name:** Internship / Job Tracker
 **Document Type:** Product Requirements Document
-**Version:** 2.0
+**Version:** 1.6
 **Date:** 16 April 2026
-**Based on:** Software Design Document v2.0
+**Based on:** Software Design Document v1.6
 
 ---
 

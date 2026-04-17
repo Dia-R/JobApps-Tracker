@@ -3,7 +3,7 @@
 
 **Project Name:** Internship / Job Tracker  
 **Document Type:** Software Design Document  
-**Version:** 2.0  
+**Version:** 1.6 
 **Date:** 16 April 2026  
 
 ---

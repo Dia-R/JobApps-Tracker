@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import logic.Application;
 import logic.ApplicationController;
 import logic.ApplicationStatus;
+import storage.StorageException;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -143,7 +144,7 @@ public class EditApplicationController {
             try {
                 appController.updateDeadline(application.getId(), newDeadline);
                 hasChanged = true;
-            } catch (RuntimeException e) {
+            } catch (StorageException e) {
                 feedbackLabel.setText("Failed to update deadline: " + e.getMessage());
                 feedbackLabel.setStyle("-fx-text-fill: #d45b5b;");
                 return;
@@ -156,7 +157,7 @@ public class EditApplicationController {
             try {
                 appController.updateNotes(application.getId(), newNotes);
                 hasChanged = true;
-            } catch (RuntimeException e) {
+            } catch (StorageException e) {
                 feedbackLabel.setText("Failed to update notes: " + e.getMessage());
                 feedbackLabel.setStyle("-fx-text-fill: #d45b5b;");
                 return;
@@ -214,7 +215,7 @@ public class EditApplicationController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 appController.deleteApplication(application.getId());
-            } catch (RuntimeException e) {
+            } catch (StorageException e) {
                 GuiUtils.showError("Could Not Delete", e.getMessage());
                 return;
             }
